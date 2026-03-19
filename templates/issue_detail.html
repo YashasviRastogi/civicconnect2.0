@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}{{ issue.title }} - CivicConnect{% endblock %}
+
+{% block content %}
+<div class="issue-detail-page">
+    <div class="issue-detail-container">
+        <div class="issue-back">
+            <a href="{{ url_for('dashboard') }}"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        </div>
+        
+        <div class="issue-detail-card">
+            <div class="detail-header">
+                <h1>{{ issue.title }}</h1>
+                <span class="badge badge-{{ issue.status }} large">{{ issue.status.upper() }}</span>
+            </div>
+            
+            {% if issue.photo_url %}
+            <div class="detail-photo">
+                <img src="{{ issue.photo_url }}" alt="Issue photo">
+            </div>
+            {% endif %}
+            
+            <div class="detail-meta">
+                <div class="meta-row">
+                    <span class="meta-label">Location:</span>
+                    <span class="meta-value">{{ issue.locality_name }}</span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Category:</span>
+                    <span class="meta-value">{{ issue.category.capitalize() }}</span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Severity:</span>
+                    <span class="meta-value">
+                        {% for i in range(5) %}
+                            <span class="severity-dot {% if i < issue.severity %}active{% endif %}"></span>
+                        {% endfor %}
+                        ({{ issue.severity }}/5)
+                    </span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Reported By:</span>
+                    <span class="meta-value">{{ reporter.username }}</span>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-label">Date:</span>
+                    <span class="meta-value">{{ issue.created_at.strftime('%B %d, %Y at %I:%M %p') }}</span>
+                </div>
+                {% if issue.latitude and issue.longitude %}
+                <div class="meta-row">
+                    <span class="meta-label">Coordinates:</span>
+                    <span class="meta-value">{{ issue.latitude | round(4) }}, {{ issue.longitude | round(4) }}</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="detail-description">
+                <h3>Description</h3>
+                <p>{{ issue.description }}</p>
+            </div>
+            
+            <div class="detail-engagement">
+                <button class="btn-upvote-large" data-issue-id="{{ issue.id }}">
+                    <i class="fas fa-thumbs-up"></i> Support This Report ({{ issue.upvotes }} upvotes)
+                </button>
+            </div>
+            
+            <div class="comments-section">
+                <h3><i class="fas fa-comments"></i> Comments ({{ comments|length }})</h3>
+                
+                {% if session.user_id %}
+                <div class="comment-form">
+                    <form method="POST" action="{{ url_for('add_comment', issue_id=issue.id) }}">
+                        <textarea name="comment_text" class="form-control" placeholder="Leave a comment..." rows="3" required></textarea>
+                        <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem;">Post Comment</button>
+                    </form>
+                </div>
+                {% endif %}
+                
+                <div class="comments-list">
+                    {% if comments %}
+                        {% for comment in comments %}
+                        <div class="comment-item">
+                            <div class="comment-header">
+                                <strong>{{ comment.author.username }}</strong>
+                                <span class="comment-date">{{ comment.created_at.strftime('%b %d, %I:%M %p') }}</span>
+                            </div>
+                            <div class="comment-body">
+                                {{ comment.text }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="no-comments">No comments yet. Be the first to comment!</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if session.is_admin %}
+            <div class="admin-actions">
+                <h3>Admin Actions</h3>
+                <div class="status-update">
+                    <label for="new-status">Update Status:</label>
+                    <select id="new-status" class="form-control">
+                        <option value="pending" {% if issue.status == 'pending' %}selected{% endif %}>Pending</option>
+                        <option value="assigned" {% if issue.status == 'assigned' %}selected{% endif %}>Assigned</option>
+                        <option value="resolved" {% if issue.status == 'resolved' %}selected{% endif %}>Resolved</option>
+                    </select>
+                    <button class="btn btn-secondary" onclick="updateStatus({{ issue.id }})">Update</button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function updateStatus(issueId) {
+    const newStatus = document.getElementById('new-status').value;
+    axios.post(`/api/issue/${issueId}/status`, { status: newStatus })
+        .then(response => {
+            location.reload();
+        })
+        .catch(error => {
+            alert('Error updating status');
+            console.error('Error:', error);
+        });
+}
+
+document.querySelector('.btn-upvote-large').addEventListener('click', function(e) {
+    const issueId = this.dataset.issueId;
+    axios.post(`/api/issue/${issueId}/upvote`)
+        .then(response => {
+            this.innerHTML = `<i class="fas fa-thumbs-up"></i> Support This Report (${response.data.upvotes} upvotes)`;
+        })
+        .catch(error => console.error('Error:', error));
+});
+</script>
+{% endblock %}

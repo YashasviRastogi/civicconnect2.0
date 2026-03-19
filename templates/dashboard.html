@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - CivicConnect{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="dashboard-header">
+        <h1>Civic Issues Dashboard</h1>
+        <a href="{{ url_for('report_issue') }}" class="btn btn-primary">+ Report New Issue</a>
+    </div>
+    
+    <div class="filters">
+        <form method="GET" class="filter-form">
+            <div class="filter-group">
+                <select name="category" class="form-control">
+                    <option value="">All Categories</option>
+                    <option value="pothole">Pothole</option>
+                    <option value="garbage">Garbage</option>
+                    <option value="water">Water</option>
+                    <option value="electricity">Electricity</option>
+                    <option value="streetlight">Streetlight</option>
+                    <option value="drainage">Drainage</option>
+                    <option value="noise">Noise</option>
+                    <option value="traffic">Traffic</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <select name="status" class="form-control">
+                    <option value="">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="assigned">Assigned</option>
+                    <option value="resolved">Resolved</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-secondary">Filter</button>
+        </form>
+    </div>
+    
+    <div class="issues-grid">
+        {% if issues.items %}
+            {% for issue in issues.items %}
+            <div class="issue-card">
+                <div class="issue-header">
+                    <h3>
+                        <a href="{{ url_for('view_issue', issue_id=issue.id) }}">
+                            {{ issue.title }}
+                        </a>
+                    </h3>
+                    <span class="badge badge-{{ issue.status }}">{{ issue.status.upper() }}</span>
+                </div>
+                
+                <div class="issue-meta">
+                    <span class="meta-item">
+                        <i class="fas fa-map-marker-alt"></i> {{ issue.locality_name }}
+                    </span>
+                    <span class="meta-item">
+                        <i class="fas fa-tag"></i> {{ issue.category.capitalize() }}
+                    </span>
+                </div>
+                
+                <p class="issue-description">{{ issue.description[:100] }}...</p>
+                
+                {% if issue.photo_url %}
+                <img src="{{ issue.photo_url }}" alt="Issue photo" class="issue-thumbnail">
+                {% endif %}
+                
+                <div class="issue-footer">
+                    <div class="severity">
+                        <span class="severity-label">Severity:</span>
+                        <div class="severity-bar">
+                            {% for i in range(5) %}
+                                <span class="severity-dot {% if i < issue.severity %}active{% endif %}"></span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="upvotes">
+                        <button class="btn-upvote" data-issue-id="{{ issue.id }}">
+                            <i class="fas fa-thumbs-up"></i> {{ issue.upvotes }}
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="issue-timestamp">
+                    Reported {{ issue.created_at.strftime('%B %d, %Y') }}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <p>No issues found. Be the first to report one!</p>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if issues.pages > 1 %}
+    <div class="pagination">
+        {% if issues.has_prev %}
+        <a href="{{ url_for('dashboard', page=issues.prev_num) }}" class="btn btn-secondary">Previous</a>
+        {% endif %}
+        
+        {% for page_num in issues.iter_pages() %}
+            {% if page_num %}
+                {% if page_num == issues.page %}
+                <span class="page-current">{{ page_num }}</span>
+                {% else %}
+                <a href="{{ url_for('dashboard', page=page_num) }}" class="btn btn-secondary">{{ page_num }}</a>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        
+        {% if issues.has_next %}
+        <a href="{{ url_for('dashboard', page=issues.next_num) }}" class="btn btn-secondary">Next</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.btn-upvote').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const issueId = this.dataset.issueId;
+        axios.post(`/api/issue/${issueId}/upvote`)
+            .then(response => {
+                this.innerHTML = `<i class="fas fa-thumbs-up"></i> ${response.data.upvotes}`;
+            })
+            .catch(error => console.error('Error:', error));
+    });
+});
+</script>
+{% endblock %}

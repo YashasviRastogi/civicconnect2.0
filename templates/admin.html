@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel - CivicConnect{% endblock %}
+
+{% block content %}
+<div class="admin-panel">
+    <div class="admin-header">
+        <h1><i class="fas fa-tools"></i> Admin Panel</h1>
+        <p>System Statistics and Management</p>
+    </div>
+    
+    <div class="admin-filters">
+        <form method="get" class="filter-form">
+            <label for="status-filter">Show:</label>
+            <select name="status" id="status-filter" onchange="this.form.submit()">
+                <option value="" {% if not status_filter %}selected{% endif %}>All issues</option>
+                <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="assigned" {% if status_filter == 'assigned' %}selected{% endif %}>Assigned</option>
+                <option value="resolved" {% if status_filter == 'resolved' %}selected{% endif %}>Resolved</option>
+            </select>
+        </form>
+    </div>
+
+    <div class="stats-dashboard">
+        <div class="stat-card">
+            <div class="stat-icon" style="background-color: #FF6B6B;">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ total_issues }}</h3>
+                <p>Total Issues</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon" style="background-color: #FFA500;">
+                <i class="fas fa-hourglass-half"></i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ pending_issues }}</h3>
+                <p>Pending Issues</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon" style="background-color: #4ECDC4;">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ resolved_issues }}</h3>
+                <p>Resolved Issues</p>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon" style="background-color: #95E1D3;">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-info">
+                <h3>{{ total_users }}</h3>
+                <p>Registered Users</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="admin-content">
+        <div class="admin-section">
+            {% set list_label = 'All Issues' %}
+            {% if status_filter == 'pending' %}
+                {% set list_label = 'Issues (Unresolved Filtered Out)' %}
+            {% elif status_filter == 'assigned' %}
+                {% set list_label = 'Issues (In Process Filtered Out)' %}
+            {% elif status_filter == 'resolved' %}
+                {% set list_label = 'Issues (Resolved Filtered Out)' %}
+            {% endif %}
+
+            <h2>{{ list_label }}</h2>
+
+            <div class="admin-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Locality</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Severity</th>
+                            <th>Reported</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for issue in issues %}
+                        <tr>
+                            <td>#{{ issue.id }}</td>
+                            <td>
+                                <a href="{{ url_for('view_issue', issue_id=issue.id) }}">
+                                    {{ issue.title[:40] }}{% if issue.title|length > 40 %}...{% endif %}
+                                </a>
+                            </td>
+                            <td>{{ issue.locality_name }}</td>
+                            <td><span class="badge">{{ issue.category.upper() }}</span></td>
+                            <td>
+                                <select class="status-select" onchange="updateStatus({{ issue.id }}, this.value)">
+                                    <option value="pending" {% if issue.status == 'pending' %}selected{% endif %}>Pending</option>
+                                    <option value="assigned" {% if issue.status == 'assigned' %}selected{% endif %}>Assigned</option>
+                                    <option value="resolved" {% if issue.status == 'resolved' %}selected{% endif %}>Resolved</option>
+                                </select>
+                            </td>
+                            <td>
+                                {% for i in range(5) %}
+                                    <span class="severity-dot {% if i < issue.severity %}active{% endif %}"></span>
+                                {% endfor %}
+                            </td>
+                            <td>{{ issue.created_at.strftime('%b %d') }}</td>
+                            <td>
+                                <a href="{{ url_for('view_issue', issue_id=issue.id) }}" class="btn btn-sm">View</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function updateStatus(issueId, newStatus) {
+    axios.post(`/api/issue/${issueId}/status`, { status: newStatus })
+        .then(response => {
+            console.log('Status updated:', response.data);
+        })
+        .catch(error => {
+            alert('Error updating status');
+            console.error('Error:', error);
+        });
+}
+</script>
+{% endblock %}

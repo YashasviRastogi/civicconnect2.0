@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Report Issue - CivicConnect{% endblock %}
+
+{% block content %}
+<div class="report-page">
+    <div class="report-container">
+        <div class="report-card">
+            <h1>Report a Civic Issue</h1>
+            <p class="subtitle">Help us fix Ghaziabad – report problems in your locality</p>
+            
+            <form method="POST" enctype="multipart/form-data" class="report-form">
+                <div class="form-section">
+                    <h3>Issue Details</h3>
+                    
+                    <div class="form-group">
+                        <label for="title">Issue Title *</label>
+                        <input type="text" id="title" name="title" class="form-control" 
+                               placeholder="e.g., Large Pothole on Main Road" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Description *</label>
+                        <textarea id="description" name="description" class="form-control" rows="5"
+                                  placeholder="Describe the issue in detail..." required></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="category">Category *</label>
+                            <select id="category" name="category" class="form-control" required>
+                                <option value="">Select Category</option>
+                                <option value="pothole">Pothole / Road Damage</option>
+                                <option value="garbage">Garbage / Waste</option>
+                                <option value="water">Water Supply</option>
+                                <option value="electricity">Electricity</option>
+                                <option value="streetlight">Streetlight</option>
+                                <option value="drainage">Drainage / Waterlogging</option>
+                                <option value="noise">Noise Pollution</option>
+                                <option value="traffic">Traffic</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="severity">Severity Level *</label>
+                            <select id="severity" name="severity" class="form-control" required>
+                                <option value="1">1 - Minor</option>
+                                <option value="2">2 - Low</option>
+                                <option value="3" selected>3 - Medium</option>
+                                <option value="4">4 - High</option>
+                                <option value="5">5 - Critical</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Location</h3>
+                    
+                    <div class="form-group">
+                        <label for="locality_id">Locality *</label>
+                        <select id="locality_id" name="locality_id" class="form-control" required>
+                            <option value="">Select Your Locality</option>
+                            {% for locality in localities %}
+                            <option value="{{ locality.id }}">{{ locality.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Photo Evidence</h3>
+                    
+                    <div class="form-group">
+                        <label for="photo">Upload Photo (with GPS data recommended)</label>
+                        <div class="file-upload">
+                            <input type="file" id="photo" name="photo" accept="image/*" class="form-control">
+                            <p class="help-text">JPEG, PNG, or GIF. Max 16MB. GPS coordinates will be auto-detected.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-lg">Submit Report</button>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary btn-lg">Cancel</a>
+                </div>
+            </form>
+        </div>
+        
+        <div class="tips-card">
+            <h3>Tips for Better Reports</h3>
+            <ul>
+                <li>📷 Take clear, well-lit photos from multiple angles</li>
+                <li>📍 Enable GPS on your phone camera for location detection</li>
+                <li>📝 Be specific about the location and nature of the problem</li>
+                <li>⭐ Set appropriate severity level to help prioritize</li>
+                <li>👥 Upvote similar issues to show community support</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

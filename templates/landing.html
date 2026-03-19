@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}CivicConnect - Ghaziabad Issue Tracker{% endblock %}
+
+{% block content %}
+<div class="landing">
+    <section class="hero">
+        <div class="hero-content">
+            <h1>CivicConnect Ghaziabad</h1>
+            <p class="hero-subtitle">Report • Track • Resolve Civic Issues</p>
+            <p class="hero-description">Empower citizens to report and track civic issues in Ghaziabad. 
+            Work together with RWAs and administration to build a better city.</p>
+            
+            {% if not session.user_id %}
+            <div class="hero-buttons">
+                <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Get Started</a>
+                <a href="{{ url_for('login') }}" class="btn btn-secondary btn-lg">Login</a>
+            </div>
+            {% else %}
+            <div class="hero-buttons">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg">View Dashboard</a>
+                <a href="{{ url_for('report_issue') }}" class="btn btn-secondary btn-lg">Report New Issue</a>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="features">
+        <h2>Key Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <h3>GPS Photo Upload</h3>
+                <p>Upload photos with GPS coordinates. System automatically detects your locality.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3>Multi-Locality Coverage</h3>
+                <p>Track issues across 8 major Ghaziabad localities including Vaishali & Indirapuram.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h3>Hall of Shame Dashboard</h3>
+                <p>See RWA performance rankings based on issue resolution rates.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Community Voice</h3>
+                <p>Upvote issues to show support and help prioritize urgent problems.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>Mobile Friendly</h3>
+                <p>Responsive design works perfectly on phones, tablets, and desktops.</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3>Secure & Anonymous</h3>
+                <p>Report issues securely with full privacy protection.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="categories">
+        <h2>Issue Categories</h2>
+        <div class="category-grid">
+            <div class="category-item">
+                <i class="fas fa-road"></i>
+                <span>Potholes</span>
+            </div>
+            <div class="category-item">
+                <i class="fas fa-trash"></i>
+                <span>Garbage</span>
+            </div>
+            <div class="category-item">
+                <i class="fas fa-water"></i>
+                <span>Water</span>
+            </div>
+            <div class="category-item">
+                <i class="fas fa-bolt"></i>
+                <span>Electricity</span>
+            </div>
+            <div class="category-item">
+                <i class="fas fa-lightbulb"></i>
+                <span>Streetlights</span>
+            </div>
+            <div class="category-item">
+                <i class="fas fa-pipe"></i>
+                <span>Drainage</span>
+            </div>
+            <div class="category-item">
+                <i class="fas fa-volume-up"></i>
+                <span>Noise</span>
+            </div>
+            <div class="category-item">
+                <i class="fas fa-car"></i>
+                <span>Traffic</span>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stat-box">
+            <h3>8</h3>
+            <p>Localities Covered</p>
+        </div>
+        <div class="stat-box">
+            <h3>8+</h3>
+            <p>Issue Categories</p>
+        </div>
+        <div class="stat-box">
+            <h3>100%</h3>
+            <p>Free & Open</p>
+        </div>
+    </section>
+
+    <section class="cta">
+        <h2>Make a Difference Today</h2>
+        <p>Join thousands of citizens reporting and resolving civic issues in Ghaziabad</p>
+        {% if not session.user_id %}
+        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Register Now</a>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

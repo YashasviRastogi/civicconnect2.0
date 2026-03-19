@@ -1,0 +1,84 @@
+{
+  "localities": [
+    {
+      "id": 1,
+      "name": "Vaishali",
+      "lat": 28.4744,
+      "lng": 77.3270,
+      "rwa_name": "Vaishali RWA",
+      "rwa_contact": "011-2245-8901",
+      "rwa_email": "contact@vaishaliwa.in",
+      "severity_score": 7.5
+    },
+    {
+      "id": 2,
+      "name": "Indirapuram",
+      "lat": 28.4259,
+      "lng": 77.3980,
+      "rwa_name": "Indirapuram Society Council",
+      "rwa_contact": "011-2256-7834",
+      "rwa_email": "admin@indirasc.in",
+      "severity_score": 6.8
+    },
+    {
+      "id": 3,
+      "name": "Raj Nagar",
+      "lat": 28.4450,
+      "lng": 77.3000,
+      "rwa_name": "Raj Nagar Residents Club",
+      "rwa_contact": "011-2245-3456",
+      "rwa_email": "info@rajnagarrc.in",
+      "severity_score": 5.2
+    },
+    {
+      "id": 4,
+      "name": "Crossing Republik",
+      "lat": 28.4100,
+      "lng": 77.3550,
+      "rwa_name": "Crossing Republik RWA",
+      "rwa_contact": "011-2234-5678",
+      "rwa_email": "contact@crossingrepublik.com",
+      "severity_score": 8.1
+    },
+    {
+      "id": 5,
+      "name": "Sector 1 Kaushambi",
+      "lat": 28.4300,
+      "lng": 77.3600,
+      "rwa_name": "Kaushambi Sector RWA",
+      "rwa_contact": "011-2298-7654",
+      "rwa_email": "admin@kaushambirwa.in",
+      "severity_score": 4.5
+    },
+    {
+      "id": 6,
+      "name": "Shipra Valley",
+      "lat": 28.4380,
+      "lng": 77.3350,
+      "rwa_name": "Shipra Valley Management",
+      "rwa_contact": "011-2289-8765",
+      "rwa_email": "management@shipravalley.co",
+      "severity_score": 6.2
+    },
+    {
+      "id": 7,
+      "name": "Rajarhat",
+      "lat": 28.4500,
+      "lng": 77.3150,
+      "rwa_name": "Rajarhat RWA",
+      "rwa_contact": "011-2244-3210",
+      "rwa_email": "contact@rajarhatra.in",
+      "severity_score": 7.8
+    },
+    {
+      "id": 8,
+      "name": "Pratap Vihar",
+      "lat": 28.4200,
+      "lng": 77.3450,
+      "rwa_name": "Pratap Vihar Society",
+      "rwa_contact": "011-2276-5432",
+      "rwa_email": "info@pratapvihar.org",
+      "severity_score": 5.9
+    }
+  ]
+}

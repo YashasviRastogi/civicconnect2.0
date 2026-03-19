@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Hall of Shame - CivicConnect{% endblock %}
+
+{% block content %}
+<div class="hall-of-shame">
+    <div class="page-header">
+        <h1>🚨 Hall of Shame</h1>
+        <p class="subtitle">RWA Rankings by Civic Issue Performance</p>
+    </div>
+    
+    <div class="rankings-container">
+        {% for locality in rankings %}
+        <div class="ranking-card {% if loop.index == 1 %}rank-worst{% elif loop.index <= 3 %}rank-bad{% endif %}">
+            <div class="rank-number">
+                {% if loop.index == 1 %}
+                    <i class="fas fa-crown"></i>
+                {% elif loop.index == 2 %}
+                    <i class="fas fa-medal"></i>
+                {% elif loop.index == 3 %}
+                    <i class="fas fa-medal"></i>
+                {% else %}
+                    #{{ loop.index }}
+                {% endif %}
+            </div>
+            
+            <div class="ranking-content">
+                <h3 class="locality-name">{{ locality.name }}</h3>
+                
+                <div class="rwa-info">
+                    <div class="rwa-detail">
+                        <strong>RWA:</strong> {{ locality.rwa_name }}
+                    </div>
+                    <div class="rwa-detail">
+                        <strong>Contact:</strong> 
+                        <a href="tel:{{ locality.rwa_contact }}">{{ locality.rwa_contact }}</a>
+                    </div>
+                    <div class="rwa-detail">
+                        <strong>Email:</strong> 
+                        <a href="mailto:{{ locality.rwa_email }}">{{ locality.rwa_email }}</a>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat">
+                        <div class="stat-value">{{ locality.total_issues }}</div>
+                        <div class="stat-label">Total Issues</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">{{ locality.unresolved_issues }}</div>
+                        <div class="stat-label">Unresolved</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">{{ locality.avg_severity }}</div>
+                        <div class="stat-label">Avg Severity</div>
+                    </div>
+                    {% if locality.total_issues > 0 %}
+                    <div class="stat">
+                        <div class="stat-value">
+                            {{ ((locality.total_issues - locality.unresolved_issues) / locality.total_issues * 100) | round | int }}%
+                        </div>
+                        <div class="stat-label">Resolution Rate</div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="severity-meter">
+                    <div class="meter-bar">
+                        <div class="meter-fill" style="width: {{ (locality.avg_severity / 5 * 100) | int }}%"></div>
+                    </div>
+                    <span class="meter-label">Health Score: {{ (100 - locality.avg_severity * 20) | int }}/100</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="hall-info">
+        <h3>What is the Hall of Shame?</h3>
+        <p>This ranking showcases RWAs and localities based on civic issue metrics. It's designed to:</p>
+        <ul>
+            <li>✓ Highlight areas that need urgent attention</li>
+            <li>✓ Encourage RWAs to take action on reported issues</li>
+            <li>✓ Track progress over time</li>
+            <li>✓ Foster healthy competition between localities</li>
+            <li>✓ Empower citizens with transparency</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
